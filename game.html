@@ -561,3 +561,122 @@ if (savedUsername) {
 
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eclipse Battle</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #05030a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .game-menu {
+            position: relative;
+            width: min(100vw, 1100px);
+            aspect-ratio: 696 / 390;
+            background: url("eclipse-menu.png") center / contain no-repeat;
+        }
+
+        .menu-button {
+            position: absolute;
+            left: 1.5%;
+            width: 29%;
+            height: 9%;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            background: transparent;
+            color: transparent;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .menu-button:hover,
+        .menu-button:focus {
+            background: rgba(255, 220, 150, 0.18);
+            border-color: rgba(255, 230, 170, 0.8);
+            box-shadow: 0 0 18px rgba(255, 220, 150, 0.5);
+            outline: none;
+        }
+
+        .start-button {
+            top: 38%;
+        }
+
+        .saves-button {
+            top: 48%;
+        }
+
+        .cards-button {
+            top: 58%;
+        }
+
+        .leaderboard-button {
+            top: 68%;
+        }
+
+        @media (max-width: 600px) {
+            .game-menu {
+                width: 100vw;
+            }
+
+            .menu-button {
+                left: 1%;
+                width: 35%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="game-menu" aria-label="Eclipse Battle main menu">
+        <button class="menu-button start-button" id="startGame" aria-label="Start game">
+            Start game
+        </button>
+
+        <button class="menu-button saves-button" id="saves" aria-label="Open saves">
+            Saves
+        </button>
+
+        <button class="menu-button cards-button" id="cards" aria-label="Open card collections">
+            Card Collections
+        </button>
+
+        <button class="menu-button leaderboard-button" id="leaderboards" aria-label="Open leaderboards">
+            Leaderboards
+        </button>
+    </main>
+
+    <script>
+        document.getElementById("startGame").addEventListener("click", () => {
+            window.location.href = "battle.html";
+        });
+
+        document.getElementById("saves").addEventListener("click", () => {
+            window.location.href = "saves.html";
+        });
+
+        document.getElementById("cards").addEventListener("click", () => {
+            window.location.href = "cards.html";
+        });
+
+        document.getElementById("leaderboards").addEventListener("click", () => {
+            window.location.href = "leaderboards.html";
+        });
+    </script>
+
+</body>
+</html>
