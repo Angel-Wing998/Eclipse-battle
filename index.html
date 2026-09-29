@@ -35,7 +35,7 @@
             width: 100%;
             max-width: 390px;
             padding: 35px;
-            background: rgba(20, 0, 45, 0.85);
+            background: rgba(20, 0, 45, 0.88);
             border: 1px solid rgba(216, 180, 254, 0.5);
             border-radius: 20px;
             box-shadow: 0 0 35px rgba(168, 85, 247, 0.35);
@@ -119,8 +119,8 @@
         .character-section {
             flex: 1;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             text-align: center;
         }
 
@@ -143,8 +143,7 @@
         }
 
         @keyframes float {
-            0%,
-            100% {
+            0%, 100% {
                 transform: translateY(0);
             }
 
@@ -194,6 +193,8 @@
                         type="text"
                         placeholder="Choose a username"
                         minlength="3"
+                        maxlength="20"
+                        autocomplete="username"
                         required
                     >
                 </div>
@@ -206,6 +207,7 @@
                         name="email"
                         type="email"
                         placeholder="Enter your email"
+                        autocomplete="email"
                         required
                     >
                 </div>
@@ -219,6 +221,7 @@
                         type="password"
                         placeholder="Choose a password"
                         minlength="8"
+                        autocomplete="new-password"
                         required
                     >
                 </div>
@@ -226,7 +229,7 @@
                 <button type="submit">Create Account</button>
             </form>
 
-            <p id="message" role="status"></p>
+            <p id="message" role="status" aria-live="polite"></p>
         </section>
 
         <section class="character-section">
@@ -245,11 +248,19 @@
         const signupForm = document.getElementById("signupForm");
         const message = document.getElementById("message");
 
-        signupForm.addEventListener("submit", function(event) {
+        signupForm.addEventListener("submit", function (event) {
             event.preventDefault();
 
-            const username = document.getElementById("username").value.trim();
-            const email = document.getElementById("email").value.trim();
+            const username = document
+                .getElementById("username")
+                .value
+                .trim();
+
+            const email = document
+                .getElementById("email")
+                .value
+                .trim();
+
             const password = document.getElementById("password").value;
 
             if (username.length < 3) {
@@ -264,33 +275,21 @@
                 return;
             }
 
-            message.textContent =
-                `Welcome, ${username}! Your account form was submitted.`;
-
-            signupForm.reset();
-
             /*
-                This is only a front-end demonstration.
+             * Demonstration only:
+             * Store the username and email so game.html can display them.
+             * Never store the password in localStorage.
+             */
+            localStorage.setItem("username", username);
+            localStorage.setItem("email", email);
 
-                In a real application, send the data securely to a
-                backend or authentication service. Never store passwords
-                directly in browser code or localStorage.
+            message.textContent =
+                `Welcome, ${username}! Opening Eclipse Battle...`;
 
-                Example:
-
-                fetch("/api/register", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        username,
-                        email,
-                        password
-                    })
-                });
-            */
+            setTimeout(function () {
+                window.location.href = "game.html";
+            }, 700);
         });
-    </script>
+        </script>
 </body>
 </html>
