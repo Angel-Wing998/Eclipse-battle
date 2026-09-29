@@ -299,7 +299,8 @@
     <!-- Start game screen -->
     <section id="startScreen" class="game-screen">
         <div class="panel">
-            <h1>Begin the Battle</h1>
+            <h1>Begin the Battle, <span id="playerName">Warrior</span></h1>
+
             <p>Choose your fighter and defeat the Eclipse Beast.</p>
 
             <div class="battle-area">
@@ -550,6 +551,12 @@
         window.addEventListener("beforeunload", saveGame);
 
         updateBattleDisplay();
+        const savedUsername = localStorage.getItem("username");
+
+if (savedUsername) {
+    document.getElementById("playerName").textContent = savedUsername;
+}
+
     </script>
 
 </body>
