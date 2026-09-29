@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Eclipse Battle</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --gold: #ffe8a3;
+            --bright-gold: #fff4c2;
+            --dark: #09090d;
+            --panel: rgba(10, 8, 15, 0.9);
+        }
+
+        body {
+            min-height: 100vh;
+            color: var(--gold);
+            background: #08080b;
+            font-family: Georgia, "Times New Roman", serif;
+        }
+
+        button {
+            font: inherit;
+        }
+
+        .screen {
+            min-height: 100vh;
+        }
+
+        /* Welcome screen */
+
+        #welcomeScreen {
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            min-height: 100vh;
+            overflow: hidden;
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(0, 0, 0, 0.55),
+                    rgba(0, 0, 0, 0.05)
+                ),
+                url("eclipse-welcome.png") center / cover no-repeat;
+        }
+
+        .welcome-menu {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            width: min(520px, 48vw);
+            min-height: 100vh;
+            padding: 18vh 0 7vh 7vw;
+            gap: 12px;
+        }
+
+        .menu-button {
+           : fit-content;
+            min-width: 330px;
+            padding: 12px 20px;
+            color: var(--bright-gold);
+            background: transparent;
+            border: 0;
+            text-align: left;
+            text-shadow: 0 0 14px #fff0a8;
+            font-size: clamp(2rem, 4vw, 4.3rem);
+            cursor: pointer;
+            transition: color 0.2s, transform 0.2s, text-shadow 0.2s;
+        }
+
+        .menu-button:hover,
+        .menu-button:focus-visible {
+            color: white;
+            transform: translateX(14px);
+            text-shadow:
+                0 0 8px white,
+                0 0 24px #ffd85e;
+            outline: none;
+        }
+
+        .save-note {
+            position: absolute;
+            bottom: 5%;
+            left: 38%;
+            color: #ffeec1;
+            text-shadow: 0 0 10px #000;
+            font-size: clamp(1rem, 2vw, 1.8rem);
+        }
+
+        /* Interior screens */
+
+        .game-screen {
+            display: none;
+            min-height: 100vh;
+            padding: 30px;
+            background:
+                radial-gradient(circle at top, #30203a, transparent 45%),
+                #08080b;
+        }
+
+        .game-screen.active {
+            display: block;
+        }
+
+        .panel {
+            width: min(1000px, 100%);
+            min-height: calc(100vh - 60px);
+            margin: 0 auto;
+            padding: clamp(24px, 5vw, 60px);
+            background: var(--panel);
+            border: 1px solid rgba(255, 232, 163, 0.55);
+            box-shadow: 0 0 35px rgba(255, 210, 80, 0.16);
+        }
+
+        h1 {
+            margin-bottom: 12px;
+            color: var(--bright-gold);
+            font-size: clamp(2.3rem, 6vw, 5rem);
+            text-shadow: 0 0 18px #f5c85b;
+        }
+
+        h2 {
+            margin: 26px 0 14px;
+            color: white;
+        }
+
+        p {
+            margin-bottom: 18px;
+            color: #f8e8b1;
+            font-family: Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        .back-button,
+        .action-button {
+            margin-top: 20px;
+            padding: 12px 22px;
+            color: #17100a;
+            background: var(--gold);
+            border: 0;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back-button:hover,
+        .action-button:hover {
+            background: white;
+        }
+
+        /* Start game */
+
+        .battle-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .fighter {
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 232, 163, 0.35);
+            text-align: center;
+        }
+
+        .fighter-icon {
+            margin-bottom: 12px;
+            font-size: 5rem;
+        }
+
+        .health-bar {
+            height: 18px;
+            margin: 15px 0;
+            overflow: hidden;
+            background: #21161b;
+            border: 1px solid #8b6731;
+        }
+
+        .health {
+            width: 100%;
+            height: 100%;
+            background: #b52c3d;
+            transition: width 0.3s;
+        }
+
+        #battleMessage {
+            min-height: 30px;
+            margin-top: 25px;
+            color: var(--bright-gold);
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        /* Saves and collections */
+
+        .save-card,
+        .collection-card,
+        .leaderboard-row {
+            margin: 15px 0;
+            padding: 18px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 232, 163, 0.35);
+            font-family: Arial, sans-serif;
+        }
+
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .collection-card {
+            text-align: center;
+        }
+
+        .card-icon {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 3rem;
+        }
+
+        .leaderboard-row {
+            display: flex;
+            justify-content: space-between;
+            color: white;
+        }
+
+        @media (max-width: 800px) {
+            #welcomeScreen {
+                background-position: 63% center;
+            }
+
+            .welcome-menu {
+                width: 100%;
+                padding: 22vh 8vw 100px;
+                background: linear-gradient(
+                    90deg,
+                    rgba(0, 0, 0, 0.75),
+                    transparent
+                );
+            }
+
+            .menu-button {
+                min-width: 0;
+                font-size: clamp(1.8rem, 9vw, 3.5rem);
+            }
+
+            .save-note {
+                right: 8vw;
+                bottom: 4%;
+                left: auto;
+                font-size: 1rem;
+            }
+
+            .battle-area {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Welcome screen -->
+    <main id="welcomeScreen" class="screen">
+        <nav class="welcome-menu" aria-label="Main menu">
+            <button class="menu-button" data-screen="startScreen">
+                Start game
+            </button>
+
+            <button class="menu-button" data-screen="savesScreen">
+                Saves
+            </button>
+
+            <button class="menu-button" data-screen="collectionsScreen">
+                Card Collections
+            </button>
+
+            <button class="menu-button" data-screen="leaderboardsScreen">
+                Leaderboards
+            </button>
+
+            <p class="save-note">Saves every time you leave!</p>
+        </nav>
+    </main>
+
+    <!-- Start game screen -->
+    <section id="startScreen" class="game-screen">
+        <div class="panel">
+            <h1>Begin the Battle</h1>
+            <p>Choose your fighter and defeat the Eclipse Beast.</p>
+
+            <div class="battle-area">
+                <article class="fighter">
+                    <div class="fighter-icon">🛡️</div>
+                    <h2>Light Guardian</h2>
+
+                    <div class="health-bar">
+                        <div id="playerHealth" class="health"></div>
+                    </div>
+
+                    <p>Health: <span id="playerHealthText">100</span></p>
+
+                    <button id="attackButton" class="action-button">
+                        Attack
+                    </button>
+                </article>
+
+                <article class="fighter">
+                    <div class="fighter-icon">👹</div>
+                    <h2>Eclipse Beast</h2>
+
+                    <div class="health-bar">
+                        <div id="enemyHealth" class="health"></div>
+                    </div>
+
+                    <p>Health: <span id="enemyHealthText">100</span></p>
+                </article>
+            </div>
+
+            <p id="battleMessage">Your opponent awaits...</p>
+
+            <button class="back-button" data-screen="welcomeScreen">
+                Return to Menu
+            </button>
+        </div>
+    </section>
+
+    <!-- Saves screen -->
+    <section id="savesScreen" class="game-screen">
+        <div class="panel">
+            <h1>Saves</h1>
+            <p>Your progress is saved automatically in this browser.</p>
+
+            <div class="save-card">
+                <strong>Current save</strong>
+                <p id="saveDetails">Loading save data...</p>
+            </div>
+
+            <button id="clearSaveButton" class="action-button">
+                Clear Save
+            </button>
+
+            <br>
+
+            <button class="back-button" data-screen="welcomeScreen">
+                Return to Menu
+            </button>
+        </div>
+    </section>
+
+    <!-- Card collections screen -->
+    <section id="collectionsScreen" class="game-screen">
+        <div class="panel">
+            <h1>Card Collections</h1>
+            <p>Collect powerful cards to use during your battles.</p>
+
+            <div class="collection-grid">
+                <article class="collection-card">
+                    <span class="card-icon">🔥</span>
+                    <strong>Solar Flame</strong>
+                    <p>Power: 25</p>
+                </article>
+
+                <article class="collection-card">
+                    <span class="card-icon">🌙</span>
+                    <strong>Lunar Shield</strong>
+                    <p>Defense: 20</p>
+                </article>
+
+                <article class="collection-card">
+                    <span class="card-icon">⚡</span>
+                    <strong>Star Strike</strong>
+                    <p>Power: 30</p>
+                </article>
+
+                <article class="collection-card">
+                    <span class="card-icon">🌌</span>
+                    <strong>Eclipse Portal</strong>
+                    <p>Rare card</p>
+                </article>
+            </div>
+
+            <button class="back-button" data-screen="welcomeScreen">
+                Return to Menu
+            </button>
+        </div>
+    </section>
+
+    <!-- Leaderboards screen -->
+    <section id="leaderboardsScreen" class="game-screen">
+        <div class="panel">
+            <h1>Leaderboards</h1>
+            <p>See who has conquered the Eclipse Battle arena.</p>
+
+            <div class="leaderboard-row">
+                <span>1. StarWarden</span>
+                <strong>2,450 points</strong>
+            </div>
+
+            <div class="leaderboard-row">
+                <span>2. MoonKnight</span>
+                <strong>2,180 points</strong>
+            </div>
+
+            <div class="leaderboard-row">
+                <span>3. EclipseMaster</span>
+                <strong>1,920 points</strong>
+            </div>
+
+            <div class="leaderboard-row">
+                <span>4. LightBringer</span>
+                <strong>1,740 points</strong>
+            </div>
+
+            <button class="back-button" data-screen="welcomeScreen">
+                Return to Menu
+            </button>
+        </div>
+    </section>
+
+    <script>
+        const welcomeScreen = document.getElementById("welcomeScreen");
+        const screens = document.querySelectorAll(".game-screen");
+
+        const playerHealthBar = document.getElementById("playerHealth");
+        const enemyHealthBar = document.getElementById("enemyHealth");
+
+        const playerHealthText = document.getElementById("playerHealthText");
+        const enemyHealthText = document.getElementById("enemyHealthText");
+
+        const battleMessage = document.getElementById("battleMessage");
+        const saveDetails = document.getElementById("saveDetails");
+
+        let playerHealth = Number(localStorage.getItem("playerHealth")) || 100;
+        let enemyHealth = Number(localStorage.getItem("enemyHealth")) || 100;
+        let battlesWon = Number(localStorage.getItem("battlesWon")) || 0;
+
+        function showScreen(screenId) {
+            if (screenId === "welcomeScreen") {
+                welcomeScreen.style.display = "flex";
+
+                screens.forEach(function(screen) {
+                    screen.classList.remove("active");
+                });
+
+                saveGame();
+                return;
+            }
+
+            welcomeScreen.style.display = "none";
+
+            screens.forEach(function(screen) {
+                screen.classList.remove("active");
+            });
+
+            document.getElementById(screenId).classList.add("active");
+
+            if (screenId === "savesScreen") {
+                updateSaveDetails();
+            }
+        }
+
+        document.querySelectorAll("[data-screen]").forEach(function(button) {
+            button.addEventListener("click", function() {
+                showScreen(button.dataset.screen);
+            });
+        });
+
+        function updateBattleDisplay() {
+            playerHealth = Math.max(0, playerHealth);
+            enemyHealth = Math.max(0, enemyHealth);
+
+            playerHealthBar.style.width = playerHealth + "%";
+            enemyHealthBar.style.width = enemyHealth + "%";
+
+            playerHealthText.textContent = playerHealth;
+            enemyHealthText.textContent = enemyHealth;
+        }
+
+        document.getElementById("attackButton").addEventListener("click", function() {
+            if (enemyHealth <= 0 || playerHealth <= 0) {
+                return;
+            }
+
+            const playerAttack = Math.floor(Math.random() * 16) + 10;
+            const enemyAttack = Math.floor(Math.random() * 12) + 5;
+
+            enemyHealth -= playerAttack;
+
+            if (enemyHealth <= 0) {
+                enemyHealth = 0;
+                battlesWon++;
+
+                battleMessage.textContent =
+                    "Victory! The Eclipse Beast has been defeated.";
+
+                document.getElementById("attackButton").disabled = true;
+            } else {
+                playerHealth -= enemyAttack;
+
+                battleMessage.textContent =
+                    `You dealt ${playerAttack} damage. The beast dealt ${enemyAttack} damage.`;
+            }
+
+            updateBattleDisplay();
+            saveGame();
+        });
+
+        function saveGame() {
+            localStorage.setItem("playerHealth", playerHealth);
+            localStorage.setItem("enemyHealth", enemyHealth);
+            localStorage.setItem("battlesWon", battlesWon);
+        }
+
+        function updateSaveDetails() {
+            saveDetails.textContent =
+                `Player health: ${playerHealth} | ` +
+                `Enemy health: ${enemyHealth} | ` +
+                `Battles won: ${battlesWon}`;
+        }
+
+        document.getElementById("clearSaveButton").addEventListener("click", function() {
+            localStorage.clear();
+
+            playerHealth = 100;
+            enemyHealth = 100;
+            battlesWon = 0;
+
+            document.getElementById("attackButton").disabled = false;
+
+            battleMessage.textContent = "Your opponent awaits...";
+
+            updateBattleDisplay();
+            updateSaveDetails();
+        });
+
+        window.addEventListener("beforeunload", saveGame);
+
+        updateBattleDisplay();
+    </script>
+
+</body>
+</html>
