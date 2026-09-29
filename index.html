@@ -1,29 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eclipse Battle</title>
 </head>
-
 <body>
-
     <h1>⚔️ Eclipse Battle</h1>
 
-    <h2>Enter your name</h2>
+    <h2>Create an account</h2>
 
-    <input id="playerName" type="text" placeholder="Your name">
+    <form id="signupForm">
+        <input
+            id="username"
+            type="text"
+            placeholder="Choose a username"
+            required
+        >
 
-    <button onclick="startGame()">Begin Battle</button>
+        <input
+            id="email"
+            type="email"
+            placeholder="Enter your email"
+            required
+        >
 
-    <p id="welcome"></p>
+        <input
+            id="password"
+            type="password"
+            placeholder="Choose a password"
+            required
+        >
+
+        <button type="submit">Create Account</button>
+    </form>
+
+    <p id="message"></p>
 
     <script>
-        function startGame() {
-            let name = document.getElementById("playerName").value;
+        document.getElementById("signupForm").addEventListener("submit", function(event) {
+            event.preventDefault();
 
-            document.getElementById("welcome").textContent =
-                "Welcome, " + name + "! A Shadow Beast approaches... 👹";
-        }
+            const username = document.getElementById("username").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+
+            if (password.length < 8) {
+                document.getElementById("message").textContent =
+                    "Password must be at least 8 characters long.";
+                return;
+            }
+
+            document.getElementById("message").textContent =
+                `Account form submitted for ${username}!`;
+
+            // In a real app, send this data to your backend:
+            // fetch("/api/register", { ... });
+        });
     </script>
-
 </body>
 </html>
