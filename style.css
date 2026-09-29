@@ -1,47 +1,95 @@
+/* Make sizing predictable */
 * {
     box-sizing: border-box;
 }
 
+/* Fill the entire browser window */
 html,
 body {
-    margin: 0;
+    width: 100%;
     min-height: 100%;
+    margin: 0;
 }
 
+/* Page background */
 body {
-  background: #05030a url("eclipse-menu.png") center / cover no-repeat;
-}
-
-
-.game-menu {
-    position: relative;
     min-height: 100vh;
+    color: white;
+    background-color: #05030a;
+
+    /* Use this if your image is named eclipse-menu.png */
     background-image: url("eclipse-menu.png");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
 }
 
-/* Remove this entire rule if the buttons are already printed in the image */
+/* Main game menu */
+.game-menu {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 100vh;
+
+    background-image: url("eclipse-menu.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* Other screens */
+#game,
+#menu,
+.screen {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* Optional dark overlay.
+   Remove this if the image looks too dark. */
+.game-menu::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+}
+
+/* Keep menu content above the overlay */
+.game-menu > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Clickable menu buttons */
 .menu-buttons {
     position: absolute;
-    left: 50%;
     top: 65%;
+    left: 50%;
     transform: translate(-50%, -50%);
+
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
+/* Button styling */
 .menu-buttons button {
     min-width: 220px;
     padding: 14px 24px;
-    border: 2px solid white;
-    border-radius: 10px;
+
     color: white;
-    background: rgba(20, 0, 40, 0.75);
     font-size: 18px;
     cursor: pointer;
+
+    background: rgba(20, 0, 40, 0.75);
+    border: 2px solid white;
+    border-radius: 10px;
 }
 
 .menu-buttons button:hover {
