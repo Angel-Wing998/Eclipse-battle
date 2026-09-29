@@ -1,12 +1,48 @@
-game-menu 
-{background: url("eclipse-menu.png") center / contain no-repeat;}
+* {
+    box-sizing: border-box;
+}
+
+html,
 body {
     margin: 0;
-    min-height: 100vh;
-    background: #05030a;
+    min-height: 100%;
+}
+
+body {
+    background: #000;
 }
 
 .game-menu {
+    position: relative;
     min-height: 100vh;
-    background: url("eclipse-menu.png") center / contain no-repeat;
+    background-image: url("eclipse-menu.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* Remove this entire rule if the buttons are already printed in the image */
+.menu-buttons {
+    position: absolute;
+    left: 50%;
+    top: 65%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.menu-buttons button {
+    min-width: 220px;
+    padding: 14px 24px;
+    border: 2px solid white;
+    border-radius: 10px;
+    color: white;
+    background: rgba(20, 0, 40, 0.75);
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.menu-buttons button:hover {
+    background: rgba(120, 40, 200, 0.9);
 }
