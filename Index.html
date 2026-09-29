@@ -1,10 +1,29 @@
 <!DOCTYPE html>
 <html>
-  <Head>
-      <title> Eclipse Battle</title>
-  </Head>
-  <body>
-    <h1> Eclipse Battle</h1>
-    <p> Your first game is being created...</p>
-  </body>
+<head>
+    <title>Eclipse Battle</title>
+</head>
+
+<body>
+
+    <h1>⚔️ Eclipse Battle</h1>
+
+    <h2>Enter your name</h2>
+
+    <input id="playerName" type="text" placeholder="Your name">
+
+    <button onclick="startGame()">Begin Battle</button>
+
+    <p id="welcome"></p>
+
+    <script>
+        function startGame() {
+            let name = document.getElementById("playerName").value;
+
+            document.getElementById("welcome").textContent =
+                "Welcome, " + name + "! A Shadow Beast approaches... 👹";
+        }
+    </script>
+
+</body>
 </html>
