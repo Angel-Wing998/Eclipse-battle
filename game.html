@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Eclipse Battle</title>
 
     <style>
@@ -16,14 +15,14 @@
         :root {
             --gold: #ffe8a3;
             --bright-gold: #fff4c2;
-            --dark: #09090d;
-            --panel: rgba(10, 8, 15, 0.9);
+            --dark: #08080b;
+            --panel: rgba(10, 8, 15, 0.92);
         }
 
         body {
             min-height: 100vh;
             color: var(--gold);
-            background: #08080b;
+            background: var(--dark);
             font-family: Georgia, "Times New Roman", serif;
         }
 
@@ -31,73 +30,67 @@
             font: inherit;
         }
 
-        .screen {
-            min-height: 100vh;
-        }
-
-        /* Welcome screen */
+        /* Main image menu */
 
         #welcomeScreen {
             position: relative;
             display: flex;
-            align-items: flex-start;
-            justify-content: flex-start;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
             min-height: 100vh;
             overflow: hidden;
-            background:
-                linear-gradient(
-                    90deg,
-                    rgba(0, 0, 0, 0.55),
-                    rgba(0, 0, 0, 0.05)
-                ),
-                url("eclipse-welcome.png") center / cover no-repeat;
+            background: #05030a url("eclipse-menu.png") center / contain no-repeat;
         }
 
-        .welcome-menu {
+        /*
+            These buttons are transparent hotspots over the words
+            already shown in eclipse-menu.png.
+        */
+
+        .image-menu {
             position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            width: min(520px, 48vw);
-            min-height: 100vh;
-            padding: 18vh 0 7vh 7vw;
-            gap: 12px;
+            width: min(1100px, 100vw);
+            aspect-ratio: 696 / 390;
         }
 
         .menu-button {
-           : fit-content;
-            min-width: 330px;
-            padding: 12px 20px;
-            color: var(--bright-gold);
+            position: absolute;
+            left: 1.5%;
+            width: 30%;
+            height: 10%;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            color: transparent;
             background: transparent;
-            border: 0;
-            text-align: left;
-            text-shadow: 0 0 14px #fff0a8;
-            font-size: clamp(2rem, 4vw, 4.3rem);
             cursor: pointer;
-            transition: color 0.2s, transform 0.2s, text-shadow 0.2s;
         }
 
         .menu-button:hover,
         .menu-button:focus-visible {
-            color: white;
-            transform: translateX(14px);
-            text-shadow:
-                0 0 8px white,
-                0 0 24px #ffd85e;
+            background: rgba(255, 220, 150, 0.18);
+            border-color: rgba(255, 230, 170, 0.85);
+            box-shadow: 0 0 18px rgba(255, 220, 150, 0.6);
             outline: none;
         }
 
-        .save-note {
-            position: absolute;
-            bottom: 5%;
-            left: 38%;
-            color: #ffeec1;
-            text-shadow: 0 0 10px #000;
-            font-size: clamp(1rem, 2vw, 1.8rem);
+        .start-button {
+            top: 38%;
         }
 
-        /* Interior screens */
+        .saves-button {
+            top: 48%;
+        }
+
+        .cards-button {
+            top: 58%;
+        }
+
+        .leaderboard-button {
+            top: 68%;
+        }
+
+        /* Other screens */
 
         .game-screen {
             display: none;
@@ -115,7 +108,7 @@
         .panel {
             width: min(1000px, 100%);
             min-height: calc(100vh - 60px);
-            margin: 0 auto;
+            margin: auto;
             padding: clamp(24px, 5vw, 60px);
             background: var(--panel);
             border: 1px solid rgba(255, 232, 163, 0.55);
@@ -123,14 +116,14 @@
         }
 
         h1 {
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             color: var(--bright-gold);
             font-size: clamp(2.3rem, 6vw, 5rem);
             text-shadow: 0 0 18px #f5c85b;
         }
 
         h2 {
-            margin: 26px 0 14px;
+            margin: 20px 0 14px;
             color: white;
         }
 
@@ -141,8 +134,8 @@
             line-height: 1.5;
         }
 
-        .back-button,
-        .action-button {
+        .action-button,
+        .back-button {
             margin-top: 20px;
             padding: 12px 22px;
             color: #17100a;
@@ -154,12 +147,17 @@
             cursor: pointer;
         }
 
-        .back-button:hover,
-        .action-button:hover {
+        .action-button:hover,
+        .back-button:hover {
             background: white;
         }
 
-        /* Start game */
+        .action-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Battle */
 
         .battle-area {
             display: grid;
@@ -203,7 +201,7 @@
             font-weight: bold;
         }
 
-        /* Saves and collections */
+        /* Saves, cards, and leaderboard */
 
         .save-card,
         .collection-card,
@@ -237,35 +235,32 @@
             color: white;
         }
 
-        @media (max-width: 800px) {
+        @media (max-width: 700px) {
             #welcomeScreen {
-                background-position: 63% center;
+                background-size: cover;
+                background-position: center;
             }
 
-            .welcome-menu {
-                width: 100%;
-                padding: 22vh 8vw 100px;
-                background: linear-gradient(
-                    90deg,
-                    rgba(0, 0, 0, 0.75),
-                    transparent
-                );
+            .image-menu {
+                width: 100vw;
             }
 
             .menu-button {
-                min-width: 0;
-                font-size: clamp(1.8rem, 9vw, 3.5rem);
-            }
-
-            .save-note {
-                right: 8vw;
-                bottom: 4%;
-                left: auto;
-                font-size: 1rem;
+                left: 1%;
+                width: 38%;
             }
 
             .battle-area {
                 grid-template-columns: 1fr;
+            }
+
+            .game-screen {
+                padding: 15px;
+            }
+
+            .panel {
+                min-height: calc(100vh - 30px);
+                padding: 25px 18px;
             }
         }
     </style>
@@ -273,30 +268,28 @@
 
 <body>
 
-    <!-- Welcome screen -->
-    <main id="welcomeScreen" class="screen">
-        <nav class="welcome-menu" aria-label="Main menu">
-            <button class="menu-button" data-screen="startScreen">
+    <!-- Image-based welcome menu -->
+    <main id="welcomeScreen">
+        <div class="image-menu" aria-label="Eclipse Battle main menu">
+            <button class="menu-button start-button" data-screen="startScreen" aria-label="Start game">
                 Start game
             </button>
 
-            <button class="menu-button" data-screen="savesScreen">
+            <button class="menu-button saves-button" data-screen="savesScreen" aria-label="Open saves">
                 Saves
             </button>
 
-            <button class="menu-button" data-screen="collectionsScreen">
+            <button class="menu-button cards-button" data-screen="collectionsScreen" aria-label="Open card collections">
                 Card Collections
             </button>
 
-            <button class="menu-button" data-screen="leaderboardsScreen">
+            <button class="menu-button leaderboard-button" data-screen="leaderboardsScreen" aria-label="Open leaderboards">
                 Leaderboards
             </button>
-
-            <p class="save-note">Saves every time you leave!</p>
-        </nav>
+        </div>
     </main>
 
-    <!-- Start game screen -->
+    <!-- Battle screen -->
     <section id="startScreen" class="game-screen">
         <div class="panel">
             <h1>Begin the Battle, <span id="playerName">Warrior</span></h1>
@@ -312,380 +305,4 @@
                         <div id="playerHealth" class="health"></div>
                     </div>
 
-                    <p>Health: <span id="playerHealthText">100</span></p>
-
-                    <button id="attackButton" class="action-button">
-                        Attack
-                    </button>
-                </article>
-
-                <article class="fighter">
-                    <div class="fighter-icon">👹</div>
-                    <h2>Eclipse Beast</h2>
-
-                    <div class="health-bar">
-                        <div id="enemyHealth" class="health"></div>
-                    </div>
-
-                    <p>Health: <span id="enemyHealthText">100</span></p>
-                </article>
-            </div>
-
-            <p id="battleMessage">Your opponent awaits...</p>
-
-            <button class="back-button" data-screen="welcomeScreen">
-                Return to Menu
-            </button>
-        </div>
-    </section>
-
-    <!-- Saves screen -->
-    <section id="savesScreen" class="game-screen">
-        <div class="panel">
-            <h1>Saves</h1>
-            <p>Your progress is saved automatically in this browser.</p>
-
-            <div class="save-card">
-                <strong>Current save</strong>
-                <p id="saveDetails">Loading save data...</p>
-            </div>
-
-            <button id="clearSaveButton" class="action-button">
-                Clear Save
-            </button>
-
-            <br>
-
-            <button class="back-button" data-screen="welcomeScreen">
-                Return to Menu
-            </button>
-        </div>
-    </section>
-
-    <!-- Card collections screen -->
-    <section id="collectionsScreen" class="game-screen">
-        <div class="panel">
-            <h1>Card Collections</h1>
-            <p>Collect powerful cards to use during your battles.</p>
-
-            <div class="collection-grid">
-                <article class="collection-card">
-                    <span class="card-icon">🔥</span>
-                    <strong>Solar Flame</strong>
-                    <p>Power: 25</p>
-                </article>
-
-                <article class="collection-card">
-                    <span class="card-icon">🌙</span>
-                    <strong>Lunar Shield</strong>
-                    <p>Defense: 20</p>
-                </article>
-
-                <article class="collection-card">
-                    <span class="card-icon">⚡</span>
-                    <strong>Star Strike</strong>
-                    <p>Power: 30</p>
-                </article>
-
-                <article class="collection-card">
-                    <span class="card-icon">🌌</span>
-                    <strong>Eclipse Portal</strong>
-                    <p>Rare card</p>
-                </article>
-            </div>
-
-            <button class="back-button" data-screen="welcomeScreen">
-                Return to Menu
-            </button>
-        </div>
-    </section>
-
-    <!-- Leaderboards screen -->
-    <section id="leaderboardsScreen" class="game-screen">
-        <div class="panel">
-            <h1>Leaderboards</h1>
-            <p>See who has conquered the Eclipse Battle arena.</p>
-
-            <div class="leaderboard-row">
-                <span>1. StarWarden</span>
-                <strong>2,450 points</strong>
-            </div>
-
-            <div class="leaderboard-row">
-                <span>2. MoonKnight</span>
-                <strong>2,180 points</strong>
-            </div>
-
-            <div class="leaderboard-row">
-                <span>3. EclipseMaster</span>
-                <strong>1,920 points</strong>
-            </div>
-
-            <div class="leaderboard-row">
-                <span>4. LightBringer</span>
-                <strong>1,740 points</strong>
-            </div>
-
-            <button class="back-button" data-screen="welcomeScreen">
-                Return to Menu
-            </button>
-        </div>
-    </section>
-
-    <script>
-        const welcomeScreen = document.getElementById("welcomeScreen");
-        const screens = document.querySelectorAll(".game-screen");
-
-        const playerHealthBar = document.getElementById("playerHealth");
-        const enemyHealthBar = document.getElementById("enemyHealth");
-
-        const playerHealthText = document.getElementById("playerHealthText");
-        const enemyHealthText = document.getElementById("enemyHealthText");
-
-        const battleMessage = document.getElementById("battleMessage");
-        const saveDetails = document.getElementById("saveDetails");
-
-        let playerHealth = Number(localStorage.getItem("playerHealth")) || 100;
-        let enemyHealth = Number(localStorage.getItem("enemyHealth")) || 100;
-        let battlesWon = Number(localStorage.getItem("battlesWon")) || 0;
-
-        function showScreen(screenId) {
-            if (screenId === "welcomeScreen") {
-                welcomeScreen.style.display = "flex";
-
-                screens.forEach(function(screen) {
-                    screen.classList.remove("active");
-                });
-
-                saveGame();
-                return;
-            }
-
-            welcomeScreen.style.display = "none";
-
-            screens.forEach(function(screen) {
-                screen.classList.remove("active");
-            });
-
-            document.getElementById(screenId).classList.add("active");
-
-            if (screenId === "savesScreen") {
-                updateSaveDetails();
-            }
-        }
-
-        document.querySelectorAll("[data-screen]").forEach(function(button) {
-            button.addEventListener("click", function() {
-                showScreen(button.dataset.screen);
-            });
-        });
-
-        function updateBattleDisplay() {
-            playerHealth = Math.max(0, playerHealth);
-            enemyHealth = Math.max(0, enemyHealth);
-
-            playerHealthBar.style.width = playerHealth + "%";
-            enemyHealthBar.style.width = enemyHealth + "%";
-
-            playerHealthText.textContent = playerHealth;
-            enemyHealthText.textContent = enemyHealth;
-        }
-
-        document.getElementById("attackButton").addEventListener("click", function() {
-            if (enemyHealth <= 0 || playerHealth <= 0) {
-                return;
-            }
-
-            const playerAttack = Math.floor(Math.random() * 16) + 10;
-            const enemyAttack = Math.floor(Math.random() * 12) + 5;
-
-            enemyHealth -= playerAttack;
-
-            if (enemyHealth <= 0) {
-                enemyHealth = 0;
-                battlesWon++;
-
-                battleMessage.textContent =
-                    "Victory! The Eclipse Beast has been defeated.";
-
-                document.getElementById("attackButton").disabled = true;
-            } else {
-                playerHealth -= enemyAttack;
-
-                battleMessage.textContent =
-                    `You dealt ${playerAttack} damage. The beast dealt ${enemyAttack} damage.`;
-            }
-
-            updateBattleDisplay();
-            saveGame();
-        });
-
-        function saveGame() {
-            localStorage.setItem("playerHealth", playerHealth);
-            localStorage.setItem("enemyHealth", enemyHealth);
-            localStorage.setItem("battlesWon", battlesWon);
-        }
-
-        function updateSaveDetails() {
-            saveDetails.textContent =
-                `Player health: ${playerHealth} | ` +
-                `Enemy health: ${enemyHealth} | ` +
-                `Battles won: ${battlesWon}`;
-        }
-
-        document.getElementById("clearSaveButton").addEventListener("click", function() {
-            localStorage.clear();
-
-            playerHealth = 100;
-            enemyHealth = 100;
-            battlesWon = 0;
-
-            document.getElementById("attackButton").disabled = false;
-
-            battleMessage.textContent = "Your opponent awaits...";
-
-            updateBattleDisplay();
-            updateSaveDetails();
-        });
-
-        window.addEventListener("beforeunload", saveGame);
-
-        updateBattleDisplay();
-        const savedUsername = localStorage.getItem("username");
-
-if (savedUsername) {
-    document.getElementById("playerName").textContent = savedUsername;
-}
-
-    </script>
-
-</body>
-</html>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eclipse Battle</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            background: #05030a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        .game-menu {
-            position: relative;
-            width: min(100vw, 1100px);
-            aspect-ratio: 696 / 390;
-            background: url("eclipse-menu.png") center / contain no-repeat;
-        }
-
-        .menu-button {
-            position: absolute;
-            left: 1.5%;
-            width: 29%;
-            height: 9%;
-            border: 2px solid transparent;
-            border-radius: 10px;
-            background: transparent;
-            color: transparent;
-            cursor: pointer;
-            transition: 0.2s ease;
-        }
-
-        .menu-button:hover,
-        .menu-button:focus {
-            background: rgba(255, 220, 150, 0.18);
-            border-color: rgba(255, 230, 170, 0.8);
-            box-shadow: 0 0 18px rgba(255, 220, 150, 0.5);
-            outline: none;
-        }
-
-        .start-button {
-            top: 38%;
-        }
-
-        .saves-button {
-            top: 48%;
-        }
-
-        .cards-button {
-            top: 58%;
-        }
-
-        .leaderboard-button {
-            top: 68%;
-        }
-
-        @media (max-width: 600px) {
-            .game-menu {
-                width: 100vw;
-            }
-
-            .menu-button {
-                left: 1%;
-                width: 35%;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <main class="game-menu" aria-label="Eclipse Battle main menu">
-        <button class="menu-button start-button" id="startGame" aria-label="Start game">
-            Start game
-        </button>
-
-        <button class="menu-button saves-button" id="saves" aria-label="Open saves">
-            Saves
-        </button>
-
-        <button class="menu-button cards-button" id="cards" aria-label="Open card collections">
-            Card Collections
-        </button>
-
-        <button class="menu-button leaderboard-button" id="leaderboards" aria-label="Open leaderboards">
-            Leaderboards
-        </button>
-    </main>
-
-    <script>
-        document.getElementById("startGame").addEventListener("click", () => {
-            window.location.href = "battle.html";
-        });
-
-        document.getElementById("saves").addEventListener("click", () => {
-            window.location.href = "saves.html";
-        });
-
-        document.getElementById("cards").addEventListener("click", () => {
-            window.location.href = "cards.html";
-        });
-
-        document.getElementById("leaderboards").addEventListener("click", () => {
-            window.location.href = "leaderboards.html";
-        });
-    </script>
-
-    eclipse-battle/
-├── index.html
-├── game.html
-├── battle.html
-├── saves.html
-├── cards.html
-├── leaderboards.html
-└── eclipse-menu.png
-
-</body>
-</html>
+                    <p>Health: <span id="
